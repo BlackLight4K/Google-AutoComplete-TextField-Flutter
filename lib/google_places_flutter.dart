@@ -20,7 +20,9 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   TextStyle textStyle;
   String googleAPIKey = '';
   AutocompleteProxyBuilder? autocompleteProxy;
+  Map<String, dynamic>? autocompleteProxyHeaders;
   PlaceDetailsProxyBuilder? placeDetailsProxy;
+  Map<String, dynamic>? placeDetailsProxyHeaders;
   int debounceTime = 600;
   List<String>? countries = [];
   TextEditingController textEditingController = TextEditingController();
@@ -92,7 +94,7 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
   bool isSearched = false;
 
   bool isCrossBtn = true;
-  late var _dio;
+  late Dio _dio;
 
   CancelToken? _cancelToken = CancelToken();
 
@@ -189,7 +191,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
       String proxyURL = "https://cors-anywhere.herokuapp.com/";
       String url = kIsWeb ? proxyURL + apiURL : apiURL;
 
-      Response response = await _dio.get(url);
+      Response response =
+          await _dio.get(url, options: Options(headers: widget.autocompleteProxyHeaders));
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       Map map = response.data;
@@ -306,9 +309,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
     }
 
     try {
-      Response response = await _dio.get(
-        url,
-      );
+      Response response =
+          await _dio.get(url, options: Options(headers: widget.autocompleteProxyHeaders));
 
       PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
