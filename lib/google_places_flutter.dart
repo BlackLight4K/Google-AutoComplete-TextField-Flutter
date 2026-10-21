@@ -124,7 +124,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
                 style: widget.textStyle,
                 controller: widget.textEditingController,
                 focusNode: widget.focusNode ?? FocusNode(),
-                keyboardType: widget.keyboardType ?? TextInputType.streetAddress,
+                keyboardType:
+                    widget.keyboardType ?? TextInputType.streetAddress,
                 textInputAction: widget.textInputAction ?? TextInputAction.done,
                 onFieldSubmitted: (value) {
                   if (widget.formSubmitCallback != null) {
@@ -238,11 +239,15 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
   }
 
   textChanged(String text) async {
+    if (!mounted) return;
+
     if (text.isNotEmpty) {
       getLocation(text);
     } else {
       alPredictions.clear();
-      this._overlayEntry!.remove();
+      if (_overlayEntry?.mounted ?? false) {
+        _overlayEntry!.remove();
+      }
     }
   }
 
